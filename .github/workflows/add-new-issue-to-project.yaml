@@ -1,10 +1,6 @@
 name: Add new issue to project
 
-on:
-  issues:
-    types:
-      - opened
-
+on: [push]
 jobs:
   add_new_issue_to_project:
     runs-on: ubuntu-latest
