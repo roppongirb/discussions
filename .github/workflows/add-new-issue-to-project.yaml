@@ -1,0 +1,27 @@
+name: Add new issue to project
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  add_new_issue_to_project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: add new issue to project
+        run: |
+          gh api graphql -f query="
+            mutation {
+              addProjectNextItem(input: {projectId: \"${PROJECT_NODE_ID}\" contentId: \"${{ github.event.issue.node_id }}\"}) {
+                projectNextItem {
+                  id
+                }
+              }
+            }
+          "
+        env:
+          GITHUB_TOKEN: ${{ secrets.ROPPONGIRB_ROBOT_GH_TOKEN }}
+          # https://github.com/orgs/roppongirb/projects/1/views/1
+          PROJECT_NODE_ID: "PN_kwDOARQexs4AAkPh"
+
