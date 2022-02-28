@@ -1,0 +1,36 @@
+name: Open new issue
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  event:
+    if: contains(github.event.issue.labels.*.name, 'event')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: k1LoW/github-script-ruby@v2
+        with:
+          script: |
+            repo = "#{context.repo.owner}/#{context.repo.repo}"
+            issue = context.payload.issue
+            non_event_issues = github.search_issues("repo:#{repo} -label:event is:open", per_page: 100).items
+            non_event_issues.each do |non_event_issue|
+              comment = "[#{non_event_issue.title}](#{non_event_issue.html_url})"
+              github.add_comment(repo, issue.number, comment)
+            end
+  non-event:
+    if: contains(github.event.issue.labels.*.name, 'event') == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: k1LoW/github-script-ruby@v2
+        with:
+          script: |
+            repo = "#{context.repo.owner}/#{context.repo.repo}"
+            issue = context.payload.issue
+            comment = "[#{issue.title}](#{issue.html_url})"
+            event_issues = github.search_issues("repo:#{repo} label:event is:open", per_page: 100).items
+            event_issues.each do |event_issue|
+              github.add_comment(repo, event_issue.number, comment)
+            end
