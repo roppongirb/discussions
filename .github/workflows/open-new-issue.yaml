@@ -13,6 +13,7 @@ jobs:
       - uses: k1LoW/github-script-ruby@v2
         with:
           script: |
+            github.auto_paginate = true
             repo = "#{context.repo.owner}/#{context.repo.repo}"
             issue = context.payload.issue
             non_event_issues = github.search_issues("repo:#{repo} -label:event is:open", per_page: 100).items
@@ -27,6 +28,7 @@ jobs:
       - uses: k1LoW/github-script-ruby@v2
         with:
           script: |
+            github.auto_paginate = true
             repo = "#{context.repo.owner}/#{context.repo.repo}"
             issue = context.payload.issue
             comment = "[#{issue.title}](#{issue.html_url})"
